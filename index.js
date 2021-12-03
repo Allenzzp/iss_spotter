@@ -1,17 +1,12 @@
-const {fetchMyIP, fetchCoordsByIP } = require("./iss");
+const { nextISSTimesForMyLocation } = require('./iss');
 
-fetchMyIP((err, ip) => {
+nextISSTimesForMyLocation((err, passTimes) => {
   if (err) {
-    console.log("It didn't work!", err);
-    return;
+    return console.log("It didn't work!", err);
   }
-  console.log('It worked! Returned IP:', ip);
-  fetchCoordsByIP(ip, (err, data) => {
-    if (err) {
-      console.log(`IP: ${ip} didn't work!`, err);
-      return;
-    }
-
-    console.log("The coordinates is", data, "based on IP address:", ip, ".");
-  });
+  for (let timeObj of passTimes) {
+    const datetime = new Date(0);
+    datetime.setUTCSeconds(timeObj.risetime);
+    console.log(`Next pass at ${datetime} for ${timeObj.duration} seconds!`);
+  }
 });
